@@ -2,64 +2,81 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+     <div className="flex flex-col min-h-screen bg-surface">
+      
+      <nav className="flex justify-between items-center px-8 py-4 border-b border-border">
+        
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-lg text-navy">U U BOR</span>
+        </div>
+        
+        <div className="flex gap-6 text-sm text-zinc-600">
+          <span>features</span>
+          <span>rooms</span>
+          <span>contact</span>
+        </div>
+        
+        <div className="flex gap-2">
+          <button className="text-sm px-4 py-2 border border-border text-navy rounded">
+            log in
+          </button>
+          <button className="text-sm px-4 py-2 bg-navy text-white rounded">
+            sign up
+          </button>
+        </div>
+      
+      </nav>
+
+      <div className="flex flex-col items-center text-center py-12 px-6 bg-muted">
+        
+        <span className="text-xs bg-teal text-navy px-3 py-1 rounded-md mb-4">
+          real-time room availability
+        </span>
+        <h1 className="text-3xl font-semibold text-navy max-w-md mb-3">
+          book a room in seconds
+        </h1>
+        <p className="text-base text-zinc-600 max-w-md mb-6">
+          see live availability, reserve a meeting room or desk, upload your
+          payment slip, and track your bookings — all in one place.
+        </p>
+        <div className="flex gap-3">
+          <button className="bg-navy text-white text-sm px-5 py-2.5 rounded font-medium">
+            get started
+          </button>
+          <button className="border border-navy text-navy text-sm px-5 py-2.5 rounded">
+            see how it works
+          </button>
+        </div>
+      </div>
+
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border py-12 px-6">
+        <div className="bg-surface flex flex-col items-center text-center p-6">
+          <h3 className="text-sm font-medium text-navy mb-1">
+            live availability
+          </h3>
+          <p className="text-xs text-zinc-600">
+            no more double-booked rooms
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="bg-surface flex flex-col items-center text-center p-6">
+          <h3 className="text-sm font-medium text-navy mb-1">
+            slip upload
+          </h3>
+          <p className="text-xs text-zinc-600">
+            pay and confirm in one flow
+          </p>
         </div>
-      </main>
+        <div className="bg-surface flex flex-col items-center text-center p-6">
+          <h3 className="text-sm font-medium text-navy mb-1">
+            role-based access
+          </h3>
+          <p className="text-xs text-zinc-600">
+            admins, staff and members, separated
+          </p>
+        </div>
+      </section>
+    
+    
     </div>
   );
 }
