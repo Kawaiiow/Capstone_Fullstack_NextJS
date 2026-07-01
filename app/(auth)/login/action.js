@@ -1,3 +1,7 @@
+"use server"
+
+import { signInWithEmail } from "@/libs/authentication";
+import { redirect } from "next/navigation";
 
 export async function loginUser(prevState, formData)
 {
@@ -5,19 +9,13 @@ export async function loginUser(prevState, formData)
 	const password = formData.get("password");
 	const inputs = {email, password};
 
-	// await new Promise((resolve) => setTimeout(resolve, 2000)); // TODO: Remove this in production
-
 	if (!email || !password)
 		return { error : "All field are required." , inputs};
-	if (email == "error")
-		return { error : "Email is invalid." , inputs};
 	try {
-		console.log("Login:", inputs);
-
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-
-		return { success: "Login successfully!" };
+		await signInWithEmail(formData);
+		console.log("Login successfully:", inputs);
 	} catch (error) {
-		return { error: "Something went wrong. Please try again.", inputs};
+		return { error: `Something went wrong. Please try again. ${error}`, inputs };
 	}
+	redirect("/");
 }

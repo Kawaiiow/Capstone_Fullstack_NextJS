@@ -7,6 +7,8 @@ import { GoogleIcon, GithubIcon } from "@/components/icons/Icons";
 
 import SubmitButton from "./SubmitButton";
 import OAuthButton from "./OAuthButton";
+import { useRouter } from "next/router";
+import { permanentRedirect } from "next/navigation";
 
 export default function LoginForm() {
 	const [state, formAction, isPending] = useActionState(loginUser, null);

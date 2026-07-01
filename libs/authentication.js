@@ -30,7 +30,7 @@ export async function signInWithEmail(formData) {
 	const email = formData.get("email");
 	const password = formData.get("password");
 
-	const { data, error } = await supabase.auth.sigInWithPassword({
+	const { data, error } = await supabase.auth.signInWithPassword({
 		email: email,
 		password: password,
 	});
@@ -38,14 +38,14 @@ export async function signInWithEmail(formData) {
 	if (error)
 		return { error: error.message };
 
-	return { success: "Login successfully"};
+	return { success: "Login successfully" };
 }
 
 export async function signInWithOAuth(provider) {
 	const supabase = await createClient();
 	const headerList = await headers();
 	const origin = headerList.get("origin");
-
+	
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
 		options: {
@@ -56,8 +56,19 @@ export async function signInWithOAuth(provider) {
 	if (error) {
 		return redirect(`/register?error=${encodeURIComponent(error.message)}`);
 	}
-
+	
 	if (data.url) {
 		return redirect(data.url);
 	}
+}
+
+export async function signOut()
+{
+	const supabase = await createClient();
+
+	const { error } = await supabase.auth.signOut();
+
+	if (error)
+		return console.log(error.message);
+	redirect("/");
 }
