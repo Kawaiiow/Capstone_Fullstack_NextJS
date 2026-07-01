@@ -1,4 +1,15 @@
+"use server"
+
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+
+export async function getUserData()
+{
+	const supabase = await createClient();
+
+
+}
 
 export async function signUpWithEmail(formData) {
 	const supabase = await createClient();
@@ -14,6 +25,7 @@ export async function signUpWithEmail(formData) {
 			data: {
 				firstname: firstname,
 				lastname: lastname,
+				role: "member",
 			},
 		},
 	});

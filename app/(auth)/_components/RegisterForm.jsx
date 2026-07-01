@@ -8,6 +8,7 @@ import { GoogleIcon, GithubIcon } from "@/components/icons/Icons";
 
 import SubmitButton from "./SubmitButton";
 import OAuthButton from "./OAuthButton";
+import { signInWithOAuth } from "../../../libs/authentication";
 
 export default function RegisterForm() {
 	const [state, formAction, isPending] = useActionState(registerUser, null);
@@ -94,11 +95,11 @@ export default function RegisterForm() {
 				<SubmitButton title={"Register"} isPending={isPending}/>
 				<OAuthButton title={"Google"}
 					favicon={<GoogleIcon/>}
-					oauth={() => {redirect("https://google.com")}} 
+					oauth={signInWithOAuth.bind(null, "google")}
 				/>
 				<OAuthButton title={"Github"}
 					favicon={<GithubIcon/>}
-					oauth={() => {console.log("login with Github")}}
+					oauth={signInWithOAuth.bind(null, "github")}
 				/>
 			</Form>
 		</div>

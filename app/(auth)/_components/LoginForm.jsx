@@ -4,11 +4,10 @@ import Form from "next/form";
 import { useActionState } from "react";
 import { loginUser } from "@/app/(auth)/login/action";
 import { GoogleIcon, GithubIcon } from "@/components/icons/Icons";
+import { signInWithOAuth } from "@/libs/authentication";
 
 import SubmitButton from "./SubmitButton";
 import OAuthButton from "./OAuthButton";
-import { useRouter } from "next/router";
-import { permanentRedirect } from "next/navigation";
 
 export default function LoginForm() {
 	const [state, formAction, isPending] = useActionState(loginUser, null);
@@ -60,11 +59,11 @@ export default function LoginForm() {
 			<SubmitButton title="Login" isPending={isPending}/>
 			<OAuthButton title={"Google"}
 				favicon={<GoogleIcon/>}
-				oauth={() => {redirect("https://google.com")}} 
+				oauth={signInWithOAuth.bind(null, "google")} 
 			/>
 			<OAuthButton title={"Github"}
 				favicon={<GithubIcon/>}
-				oauth={() => {console.log("login with Github")}}
+				oauth={signInWithOAuth.bind(null, "github")}
 			/>
 		</Form>
 	);
