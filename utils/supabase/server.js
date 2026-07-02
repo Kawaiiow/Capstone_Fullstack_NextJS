@@ -1,15 +1,6 @@
-import { createClient as createBrowserClient } from '@supabase/supabase-js'
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// Browser client (singleton)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-const supabase = createBrowserClient(supabaseUrl, supabaseKey)
-
-export default supabase
-
-// Server client (cookie-aware, call per-request)
 export async function createClient() {
 	const cookieStore = await cookies();
 
