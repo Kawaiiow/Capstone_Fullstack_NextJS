@@ -1,4 +1,5 @@
 import supabase from '@/libs/supabase'
+import Link from 'next/link'
 
 const statusConfig = {
   available: { label: 'ว่าง', color: 'bg-teal' },
@@ -11,7 +12,10 @@ function RoomCard({ room }) {
   const amenities = room.room_amenities.map((ra) => ra.amenities.name)
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-5 flex flex-col gap-3">
+     <Link
+      href={`/rooms/${room.id}`}
+      className="rounded-xl border border-border bg-surface p-5 flex flex-col gap-3 hover:shadow-md transition-shadow"
+    >
       <div className="flex items-start justify-between">
         <h3 className="font-sans font-semibold text-navy text-lg">{room.name}</h3>
         <span className="flex items-center gap-1.5 text-xs font-medium text-navy">
@@ -34,7 +38,7 @@ function RoomCard({ room }) {
           ))}
         </div>
       )}
-    </div>
+    </Link>
   )
 }
 
