@@ -1,12 +1,10 @@
 import AuthPanel from "@/app/(auth)/_components/AuthPanel";
 import RegisterForm from "@/app/(auth)/_components/RegisterForm";
-import { Suspense } from "react";
 
-export default async function RegisterPage()
-{	
+export default async function RegisterPage() {
 	return (
 		<AuthPanel title="Registeration">
-			<RegisterForm/>
+			<RegisterForm />
 		</AuthPanel>
 	);
 }

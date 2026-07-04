@@ -12,6 +12,9 @@ export async function registerUser(prevState, formData)
 
 	if (!firstname || !lastname || !email || !password)
 		return { error : "All field are required." , inputs};
+
+	if (password.length < 8)
+		return { error: "Password must be at least 8 characters long.", inputs };
 	try {
 		await signUpWithEmail(formData);
 		console.log(firstname, lastname, "has been successfully registered with", email);
