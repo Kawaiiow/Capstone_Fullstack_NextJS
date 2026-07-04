@@ -4,13 +4,6 @@ import { createClient } from "@/libs/supabase";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
-export async function getUserData()
-{
-	const supabase = await createClient();
-
-
-}
-
 export async function signUpWithEmail(formData) {
 	const supabase = await createClient();
 	const firstname = formData.get("firstname");
@@ -57,7 +50,7 @@ export async function signInWithOAuth(provider) {
 	const supabase = await createClient();
 	const headerList = await headers();
 	const origin = headerList.get("origin");
-	
+
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
 		options: {
@@ -68,14 +61,13 @@ export async function signInWithOAuth(provider) {
 	if (error) {
 		return redirect(`/register?error=${encodeURIComponent(error.message)}`);
 	}
-	
+
 	if (data.url) {
 		return redirect(data.url);
 	}
 }
 
-export async function signOut()
-{
+export async function signOut() {
 	const supabase = await createClient();
 
 	const { error } = await supabase.auth.signOut();

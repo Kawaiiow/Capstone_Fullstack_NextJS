@@ -1,31 +1,11 @@
 import Image from "next/image";
+import Navbar from "@/components/ui/Navbar";
 
 export default function Home() {
   return (
      <div className="flex flex-col min-h-screen bg-surface">
       
-      <nav className="flex justify-between items-center px-8 py-4 border-b border-border">
-        
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-lg text-navy">U U BOR</span>
-        </div>
-        
-        <div className="flex gap-6 text-sm text-zinc-600">
-          <span>features</span>
-          <span>rooms</span>
-          <span>contact</span>
-        </div>
-        
-        <div className="flex gap-2">
-          <button className="text-sm px-4 py-2 border border-border text-navy rounded">
-            log in
-          </button>
-          <button className="text-sm px-4 py-2 bg-navy text-white rounded">
-            sign up
-          </button>
-        </div>
-      
-      </nav>
+      <Navbar />
 
       <div className="flex flex-col items-center text-center py-12 px-6 bg-muted">
         
