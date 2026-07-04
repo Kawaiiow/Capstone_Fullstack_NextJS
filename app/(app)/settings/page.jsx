@@ -11,12 +11,15 @@ export default async function SettingsPage() {
 		redirect("/login")
 	}
 
+	const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single()
+	const initialRole = profile?.role || user.user_metadata?.role || "member"
+
 	return (
 		<div className="max-w-4xl mx-auto px-6 py-10 bg-white">
 			<p className="text-sm font-medium text-teal mb-1">Account Profile</p>
 			<h1 className="font-sans text-3xl font-bold text-navy mb-8">Settings</h1>
 
-			<SettingsForm initialUser={user} />
+			<SettingsForm initialUser={user} initialRole={initialRole} />
 		</div>
 	)
 }

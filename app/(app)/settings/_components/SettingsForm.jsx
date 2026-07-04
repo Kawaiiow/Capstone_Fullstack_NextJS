@@ -3,7 +3,7 @@
 import { useActionState, useState, useRef } from "react"
 import { updateProfile } from "@/app/(app)/settings/action"
 
-export default function SettingsForm({ initialUser }) {
+export default function SettingsForm({ initialUser, initialRole }) {
   const [state, formAction, isPending] = useActionState(updateProfile, null)
   const [copied, setCopied] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(null)
@@ -14,7 +14,7 @@ export default function SettingsForm({ initialUser }) {
   const metadata = user?.user_metadata || {}
   const firstname = metadata.firstname || ""
   const lastname = metadata.lastname || ""
-  const role = metadata.role || "member"
+  const role = initialRole || metadata.role || "member"
   const avatarUrl = metadata.avatar_url || null
   const email = user?.email || ""
   const userId = user?.id || ""
@@ -43,16 +43,16 @@ export default function SettingsForm({ initialUser }) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Profile Overview Card */}
       <div className="lg:col-span-1 bg-surface border border-border/40 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center transition-all duration-300 hover:shadow-md">
-        <div 
+        <div
           className="relative group mb-4 cursor-pointer"
           onClick={handleAvatarClick}
           title="Click to change profile picture"
         >
           <div className="w-24 h-24 rounded-full bg-linear-to-tr from-navy to-teal flex items-center justify-center text-white text-3xl font-sans font-bold shadow-lg shadow-navy/10 group-hover:scale-[1.03] transition-transform duration-300 overflow-hidden">
             {displayAvatar ? (
-               <img src={displayAvatar} alt="Avatar" className="w-full h-full object-cover" />
+              <img src={displayAvatar} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
-               initials
+              initials
             )}
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center text-white text-xs font-semibold backdrop-blur-[1px]">
               Upload
@@ -71,7 +71,12 @@ export default function SettingsForm({ initialUser }) {
         <div className="flex flex-col gap-2 w-full mt-4 border-t border-border/20 pt-4">
           <div className="flex justify-between items-center text-xs">
             <span className="text-zinc-500 font-medium font-sans">Role Privilege:</span>
-            <span className="px-2.5 py-0.5 rounded-full bg-teal/10 text-teal font-semibold font-sans text-[11px] capitalize tracking-wide border border-teal/20">
+            <span className={`px-2.5 py-0.5 rounded-full font-semibold font-sans text-[11px] capitalize tracking-wide border ${role === "admin"
+                ? "bg-danger/10 text-danger border-danger/20"
+                : role === "staff"
+                  ? "bg-warning/10 text-warning border-warning/20"
+                  : "bg-teal/10 text-teal border-teal/20"
+              }`}>
               {role}
             </span>
           </div>
@@ -103,13 +108,13 @@ export default function SettingsForm({ initialUser }) {
         <p className="text-xs text-zinc-500 mb-6">Update your public details and customize your profile metadata.</p>
 
         <form action={formAction} className="space-y-5">
-          <input 
-            type="file" 
-            name="avatar" 
-            accept="image/*" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            className="hidden" 
+          <input
+            type="file"
+            name="avatar"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
