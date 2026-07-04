@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase"
 import { redirect } from "next/navigation"
-import SettingsForm from "../_components/SettingsForm"
+import SettingsForm from "./_components/SettingsForm"
 
 export default async function SettingsPage() {
 	const supabase = await createClient()
