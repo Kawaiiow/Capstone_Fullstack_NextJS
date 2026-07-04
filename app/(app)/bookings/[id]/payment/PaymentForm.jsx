@@ -17,7 +17,7 @@ function SubmitButton({ disabled }) {
   )
 }
 
-export default function PaymentForm({ bookingId, totalPrice }) {
+export default function PaymentForm({ bookingId, totalPrice, existingSlipUrl }) {
   const [state, formAction] = useActionState(submitPayment, null)
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
@@ -82,33 +82,40 @@ export default function PaymentForm({ bookingId, totalPrice }) {
       
       <p className="text-sm font-medium text-navy mb-3">แนบสลิปการโอนเงิน</p>
       
-      <div 
-        className="border-2 border-dashed border-border rounded-xl p-6 text-center mb-4 cursor-pointer hover:bg-slate-50 transition-colors relative"
-        onClick={handleBoxClick}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <input 
-          type="file"
-          name="slip"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="image/jpeg, image/png, image/webp"
-          className="hidden"
-        />
+      {existingSlipUrl ? (
+        <div className="border border-border rounded-xl p-6 text-center mb-4 bg-gray-50">
+          <p className="text-sm font-medium text-teal mb-3">ส่งสลิปเรียบร้อยแล้ว (Slip uploaded)</p>
+          <img src={existingSlipUrl} alt="Uploaded Slip" className="max-h-64 object-contain mx-auto rounded-lg shadow-sm" />
+        </div>
+      ) : (
+        <div 
+          className="border-2 border-dashed border-border rounded-xl p-6 text-center mb-4 cursor-pointer hover:bg-slate-50 transition-colors relative"
+          onClick={handleBoxClick}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          <input 
+            type="file"
+            name="slip"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/jpeg, image/png, image/webp"
+            className="hidden"
+          />
 
-        {preview ? (
-           <div className="flex flex-col items-center">
-             <img src={preview} alt="Slip preview" className="max-h-48 object-contain mb-3 rounded-lg shadow-sm" />
-             <p className="text-sm text-navy/70">คลิกเพื่อเปลี่ยนไฟล์</p>
-           </div>
-        ) : (
-          <div className="py-8">
-            <p className="text-navy/70">ลากไฟล์สลิปมาวาง หรือคลิกเพื่อเลือกไฟล์</p>
-            <p className="text-xs text-navy/50 mt-1">รองรับ jpg, png ขนาดไม่เกิน 5MB</p>
-          </div>
-        )}
-      </div>
+          {preview ? (
+             <div className="flex flex-col items-center">
+               <img src={preview} alt="Slip preview" className="max-h-48 object-contain mb-3 rounded-lg shadow-sm" />
+               <p className="text-sm text-navy/70">คลิกเพื่อเปลี่ยนไฟล์</p>
+             </div>
+          ) : (
+            <div className="py-8">
+              <p className="text-navy/70">ลากไฟล์สลิปมาวาง หรือคลิกเพื่อเลือกไฟล์</p>
+              <p className="text-xs text-navy/50 mt-1">รองรับ jpg, png ขนาดไม่เกิน 5MB</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {state?.error && (
         <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
@@ -116,11 +123,15 @@ export default function PaymentForm({ bookingId, totalPrice }) {
         </div>
       )}
 
-      <SubmitButton disabled={!file} />
-      
-      <p className="text-xs text-navy/50 text-center mt-2">
-        การจองของคุณจะรอการอนุมัติจากเจ้าหน้าที่หลังแนบสลิป
-      </p>
+      {!existingSlipUrl && (
+        <>
+          <SubmitButton disabled={!file} />
+          
+          <p className="text-xs text-navy/50 text-center mt-2">
+            การจองของคุณจะรอการอนุมัติจากเจ้าหน้าที่หลังแนบสลิป
+          </p>
+        </>
+      )}
     </form>
   )
 }

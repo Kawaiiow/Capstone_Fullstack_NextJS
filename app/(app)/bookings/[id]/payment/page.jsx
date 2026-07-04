@@ -20,7 +20,8 @@ export default async function PaymentPage({ params }) {
     .from("bookings")
     .select(`
       id, start_time, end_time, status,
-      rooms ( name, price_per_hour )
+      rooms ( name, price_per_hour ),
+      payments ( slip_url )
     `)
     .eq("id", id)
     .single()
@@ -82,7 +83,11 @@ export default async function PaymentPage({ params }) {
       <div className="w-48 h-48 rounded-xl bg-muted mx-auto mb-8" />
 
       {/* อัปโหลดสลิป */}
-      <PaymentForm bookingId={id} totalPrice={totalPrice} />
+      <PaymentForm 
+        bookingId={id} 
+        totalPrice={totalPrice} 
+        existingSlipUrl={booking.payments?.[0]?.slip_url} 
+      />
     </div>
   )
 }
