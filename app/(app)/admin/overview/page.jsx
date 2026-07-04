@@ -1,4 +1,5 @@
 import { createClient } from "@/libs/supabase"
+import { createAdminClient } from "@/libs/adminClient"
 import BookingChart from "./_components/BookingChart"
 import TopRooms from "./_components/TopRooms"
 import RecentActivity from "./_components/RecentActivity"
@@ -21,6 +22,7 @@ function StatCard({ label, value, accent, icon }) {
 
 export default async function AdminOverviewPage() {
 	const supabase = await createClient()
+	const adminSupabase = createAdminClient()
 
 	// Fetch rooms
 	const { data: rooms } = await supabase
@@ -40,23 +42,137 @@ export default async function AdminOverviewPage() {
 
 	const totalRooms = rooms?.length || 0
 
-	// Mock data (replace when bookings table is created)
-	const monthlyRevenue = "฿24,500"
-	const weeklyBookings = [5, 12, 8, 15, 10, 3, 7]
+	// Fetch monthly revenue
+	const startOfMonth = new Date()
+	startOfMonth.setDate(1)
+	startOfMonth.setHours(0, 0, 0, 0)
 
-	const topRooms = [
-		{ name: "Conference Room A", type: "Meeting Room", bookings: 28 },
-		{ name: "Hot Desk Zone B", type: "Desk", bookings: 22 },
-		{ name: "Board Room", type: "Meeting Room", bookings: 18 },
-	]
+	const { data: payments } = await adminSupabase
+		.from("payments")
+		.select("amount")
+		.in("status", ["success", "paid", "completed"])
+		.gte("created_at", startOfMonth.toISOString())
 
-	const recentActivities = [
-		{ type: "booking", message: "Conference Room A booked by John D.", time: "5 minutes ago" },
-		{ type: "user", message: "New user registered: jane@example.com", time: "20 minutes ago" },
-		{ type: "cancel", message: "Hot Desk Zone B cancelled by Mike S.", time: "1 hour ago" },
-		{ type: "booking", message: "Board Room booked by Sarah T.", time: "2 hours ago" },
-		{ type: "user", message: "New user registered: alex@example.com", time: "3 hours ago" },
-	]
+	const totalRevenue = (payments || []).reduce((sum, p) => sum + parseFloat(p.amount), 0)
+	const monthlyRevenue = `฿${totalRevenue.toLocaleString()}`
+
+	// Fetch weekly bookings for the chart
+	const today = new Date()
+	const day = today.getDay()
+	const diffToMon = day === 0 ? -6 : 1 - day
+
+	const monday = new Date(today)
+	monday.setDate(today.getDate() + diffToMon)
+	monday.setHours(0, 0, 0, 0)
+
+	const nextMonday = new Date(monday)
+	nextMonday.setDate(monday.getDate() + 7)
+
+	const { data: weeklyBookingsData } = await adminSupabase
+		.from("bookings")
+		.select("start_time")
+		.gte("start_time", monday.toISOString())
+		.lt("start_time", nextMonday.toISOString())
+
+	const weeklyBookings = [0, 0, 0, 0, 0, 0, 0] // Mon, Tue, Wed, Thu, Fri, Sat, Sun
+	weeklyBookingsData?.forEach((b) => {
+		const date = new Date(b.start_time)
+		const d = date.getDay()
+		const idx = d === 0 ? 6 : d - 1 // 0-6 corresponding to Mon-Sun
+		weeklyBookings[idx]++
+	})
+
+	// Fetch top rooms by booking count
+	const { data: allBookings } = await adminSupabase
+		.from("bookings")
+		.select("room_id, rooms(name, room_type)")
+
+	const bookingCounts = {}
+	allBookings?.forEach((b) => {
+		if (!b.room_id || !b.rooms) return
+		if (!bookingCounts[b.room_id]) {
+			bookingCounts[b.room_id] = {
+				name: b.rooms.name,
+				type: b.rooms.room_type === "meeting_room" ? "Meeting Room" : "Desk",
+				bookings: 0,
+			}
+		}
+		bookingCounts[b.room_id].bookings++
+	})
+
+	const topRooms = Object.values(bookingCounts)
+		.sort((a, b) => b.bookings - a.bookings)
+		.slice(0, 3)
+
+	// Fetch recent activities (user signups + bookings)
+	const { data: { users: authUsers } } = await adminSupabase.auth.admin.listUsers()
+
+	const userActivities = (authUsers || []).map((u) => {
+		const firstname = u.user_metadata?.firstname || ""
+		const lastname = u.user_metadata?.lastname || ""
+		const name = firstname ? `${firstname} ${lastname}` : u.email
+		return {
+			type: "user",
+			message: `New user registered: ${name}`,
+			timestamp: new Date(u.created_at),
+		}
+	})
+
+	const { data: bookingsList } = await adminSupabase
+		.from("bookings")
+		.select(`
+			id,
+			status,
+			created_at,
+			rooms(name),
+			user_id
+		`)
+		.order("created_at", { ascending: false })
+		.limit(20)
+
+	const bookingActivities = (bookingsList || []).map((b) => {
+		const userObj = authUsers?.find((u) => u.id === b.user_id)
+		const firstname = userObj?.user_metadata?.firstname || ""
+		const lastname = userObj?.user_metadata?.lastname || ""
+		const name = firstname ? `${firstname} ${lastname}` : (userObj?.email || "Unknown User")
+
+		if (b.status === "cancelled") {
+			return {
+				type: "cancel",
+				message: `${b.rooms?.name || "Room"} cancelled by ${name}`,
+				timestamp: new Date(b.created_at),
+			}
+		} else {
+			return {
+				type: "booking",
+				message: `${b.rooms?.name || "Room"} booked by ${name}`,
+				timestamp: new Date(b.created_at),
+			}
+		}
+	})
+
+	function getRelativeTime(date) {
+		const now = new Date()
+		const diffMs = now - date
+		const diffSec = Math.floor(diffMs / 1000)
+		const diffMin = Math.floor(diffSec / 60)
+		const diffHr = Math.floor(diffMin / 60)
+		const diffDays = Math.floor(diffHr / 24)
+
+		if (diffSec < 60) return "Just now"
+		if (diffMin < 60) return `${diffMin} minute${diffMin > 1 ? "s" : ""} ago`
+		if (diffHr < 24) return `${diffHr} hour${diffHr > 1 ? "s" : ""} ago`
+		return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`
+	}
+
+	const recentActivities = [...userActivities, ...bookingActivities]
+		.sort((a, b) => b.timestamp - a.timestamp)
+		.slice(0, 10)
+		.map((a) => ({
+			type: a.type,
+			message: a.message,
+			time: getRelativeTime(a.timestamp),
+		}))
 
 	return (
 		<div className="max-w-6xl mx-auto px-6 py-10">
