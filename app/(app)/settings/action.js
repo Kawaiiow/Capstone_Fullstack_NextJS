@@ -14,7 +14,7 @@ export async function updateProfile(prevState, formData) {
 
   try {
     const supabase = await createClient()
-    
+
     // First retrieve current user key details to check auth
     const { data: { user }, error: userError } = await supabase.auth.getUser()
     if (userError || !user) {
@@ -26,14 +26,30 @@ export async function updateProfile(prevState, formData) {
       lastname,
     }
 
+    let oldFilePathToDelete = null
+
     if (avatarFile && avatarFile.size > 0) {
+      // 1MB = 1048576 bytes
+      if (avatarFile.size > 1048576) {
+        return { error: "Profile picture must be less than 1MB." }
+      }
+
+      // Track old avatar path if it was using supabase storage so we can delete it after new upload success
+      const oldAvatarUrl = user.user_metadata?.avatar_url
+      if (oldAvatarUrl && oldAvatarUrl.includes("/storage/v1/object/public/avatars/")) {
+        const urlParts = oldAvatarUrl.split("/storage/v1/object/public/avatars/")
+        if (urlParts.length > 1) {
+          oldFilePathToDelete = urlParts[1]
+        }
+      }
+
       const fileExt = avatarFile.name.split('.').pop()
       const filePath = `${user.id}_${Date.now()}.${fileExt}`
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, avatarFile, { upsert: true })
-      
+
       if (uploadError) {
         return { error: `Failed to upload avatar: ${uploadError.message}` }
       }
@@ -41,7 +57,7 @@ export async function updateProfile(prevState, formData) {
       const { data: { publicUrl } } = supabase.storage
         .from("avatars")
         .getPublicUrl(filePath)
-      
+
       updates.avatar_url = publicUrl
     }
 
@@ -51,6 +67,11 @@ export async function updateProfile(prevState, formData) {
 
     if (error) {
       return { error: error.message }
+    }
+
+    // Clean up old avatar image file from storage if updated successfully
+    if (oldFilePathToDelete) {
+      await supabase.storage.from("avatars").remove([oldFilePathToDelete])
     }
 
     revalidatePath("/settings")
