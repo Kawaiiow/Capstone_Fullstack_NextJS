@@ -70,3 +70,16 @@
 | `created_at` | `timestamptz` |  |
 | `updated_at` | `timestamptz` |  |
 
+## Table `notifications`
+
+### Columns
+
+| Name | Type | Constraints |
+|------|------|-------------|
+| `id` | `uuid` | Primary |
+| `user_id` | `uuid` |  |
+| `title` | `text` |  |
+| `message` | `text` |  |
+| `is_read` | `bool` |  |
+| `created_at` | `timestamptz` |  |
+
