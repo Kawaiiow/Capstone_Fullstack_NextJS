@@ -1,24 +1,27 @@
 import { createClient } from "@/libs/supabase"
 import Sidebar from "./Sidebar"
+import { redirect } from "next/navigation"
 
 export default async function AppLayout({ children }) {
 	let userRole = null
 
+	const supabase = await createClient()
+	const {
+		data: { user },
+	} = await supabase.auth.getUser()
+
+	if (!user) {
+		redirect("/login")
+	}
+
 	try {
-		const supabase = await createClient()
-		const {
-			data: { user },
-		} = await supabase.auth.getUser()
+		const { data: profile } = await supabase
+			.from("profiles")
+			.select("role")
+			.eq("id", user.id)
+			.single()
 
-		if (user) {
-			const { data: profile } = await supabase
-				.from("profiles")
-				.select("role")
-				.eq("id", user.id)
-				.single()
-
-			userRole = profile?.role || null
-		}
+		userRole = profile?.role || null
 	} catch (err) {
 		console.error("AppLayout auth check error:", err)
 	}
