@@ -12,7 +12,10 @@ export async function loginUser(prevState, formData)
 	if (!email || !password)
 		return { error : "All field are required." , inputs};
 	try {
-		await signInWithEmail(formData);
+		const res = await signInWithEmail(formData);
+		if (res?.error) {
+			return { error: res.error, inputs };
+		}
 		console.log("Login successfully:", inputs);
 	} catch (error) {
 		return { error: `Something went wrong. Please try again. ${error}`, inputs };
