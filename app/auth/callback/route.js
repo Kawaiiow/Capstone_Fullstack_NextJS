@@ -11,9 +11,26 @@ export async function GET(request) {
 		const supabase = await createClient();
 
 		// Exchange the temporary code for a secure session cookie
-		const { error } = await supabase.auth.exchangeCodeForSession(code);
+		const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
 		if (!error) {
+			const user = data?.user;
+			if (user && !user.user_metadata?.firstname) {
+				const fullName =
+					user.user_metadata?.full_name || user.user_metadata?.name || "Unknown";
+				const nameParts = fullName.trim().split(" ");
+				const firstname = nameParts[0] || "Unknown";
+				const lastname = nameParts.slice(1).join(" ") || "Unknown";
+
+				await supabase.auth.updateUser({
+					data: {
+						firstname,
+						lastname,
+						role: "member",
+					},
+				});
+			}
+
 			return NextResponse.redirect(`${origin}${next}`);
 		}
 	}
