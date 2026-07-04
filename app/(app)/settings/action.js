@@ -80,3 +80,45 @@ export async function updateProfile(prevState, formData) {
     return { error: "An unexpected error occurred. Please try again." }
   }
 }
+
+export async function updatePassword(prevState, formData) {
+  const currentPassword = formData.get("current_password")
+  const password = formData.get("password")
+
+  if (!currentPassword || !password) {
+    return { error: "Both current and new password are required." }
+  }
+
+  try {
+    const supabase = await createClient()
+
+    // First retrieve current user key details to check auth
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) {
+      return { error: "You must be logged in to update your password." }
+    }
+
+    // Verify current password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    })
+
+    if (signInError) {
+      return { error: "Incorrect current password." }
+    }
+
+    // Update password
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: password
+    })
+
+    if (updateError) {
+      return { error: updateError.message }
+    }
+
+    return { success: "Password updated successfully!" }
+  } catch (error) {
+    return { error: "An unexpected error occurred. Please try again." }
+  }
+}

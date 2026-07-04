@@ -85,3 +85,33 @@ export async function signOut() {
 		return console.log(error.message);
 	redirect("/");
 }
+
+export async function resetPasswordForEmail(formData) {
+	const supabase = await createClient();
+	const email = formData.get("email");
+	const headerList = await headers();
+	const origin = headerList.get("origin");
+
+	const { error } = await supabase.auth.resetPasswordForEmail(email, {
+		redirectTo: `${origin}/auth/callback?next=/reset-password`,
+	});
+
+	if (error)
+		return { error: error.message };
+
+	return { success: "Password reset instructions have been sent to your email" };
+}
+
+export async function updateUserPassword(formData) {
+	const supabase = await createClient();
+	const password = formData.get("password");
+
+	const { error } = await supabase.auth.updateUser({
+		password: password
+	});
+
+	if (error)
+		return { error: error.message };
+
+	return { success: "Password updated successfully!" };
+}

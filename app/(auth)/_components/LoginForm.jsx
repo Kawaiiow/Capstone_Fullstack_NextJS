@@ -10,9 +10,10 @@ import { signInWithOAuth } from "@/libs/authentication";
 import SubmitButton from "./SubmitButton";
 import OAuthButton from "./OAuthButton";
 
-export default function LoginForm({ error }) {
+export default function LoginForm({ error, success }) {
 	const [state, formAction, isPending] = useActionState(loginUser, null);
 	const displayError = state?.error || error;
+	const displaySuccess = state?.success || success;
 
 	return (
 		<Form action={formAction} className="space-y-4">
@@ -36,9 +37,12 @@ export default function LoginForm({ error }) {
 			<div>
 				<label
 					htmlFor="password"
-					className="mb-1 block text-sm font-medium text-navy"
+					className="mb-1 flex justify-between text-sm font-medium text-navy"
 				>
-					Password
+					<span>Password</span>
+					<Link href="/forgot-password" className="text-sm font-medium text-teal hover:underline" tabIndex={-1}>
+						Forgot Password?
+					</Link>
 				</label>
 				<input
 					type="password"
@@ -54,8 +58,8 @@ export default function LoginForm({ error }) {
 			{displayError && (
 				<p className="text-sm text-danger">{displayError}</p>
 			)}
-			{state?.success && (
-				<p className="text-sm text-teal">{state.success}</p>
+			{displaySuccess && (
+				<p className="text-sm text-teal">{displaySuccess}</p>
 			)}
 
 			<SubmitButton title="Login" isPending={isPending}/>

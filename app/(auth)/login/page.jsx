@@ -5,9 +5,10 @@ export default async function LoginPage({ searchParams })
 {	
 	const params = await searchParams;
 	const error = params?.error;
+	const success = params?.success;
 	return (
 		<AuthPanel title="Login">
-			<LoginForm error={error}/>
+			<LoginForm error={error} success={success} />
 		</AuthPanel>
 	);
 }
