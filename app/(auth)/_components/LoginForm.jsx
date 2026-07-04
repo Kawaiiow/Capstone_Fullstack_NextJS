@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Form from "next/form";
 import { useActionState } from "react";
 import { loginUser } from "@/app/(auth)/login/action";
@@ -65,6 +66,12 @@ export default function LoginForm() {
 				favicon={<GithubIcon/>}
 				oauth={signInWithOAuth.bind(null, "github")}
 			/>
+			<div className="mt-6 text-center text-sm text-zinc-600">
+				Don&apos;t have an account?{" "}
+				<Link href="/register" className="font-medium text-teal hover:underline">
+					Sign up
+				</Link>
+			</div>
 		</Form>
 	);
 }

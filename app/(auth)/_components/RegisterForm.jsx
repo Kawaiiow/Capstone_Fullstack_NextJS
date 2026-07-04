@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Form from "next/form";
 import { useActionState } from "react";
 import { registerUser } from "@/app/(auth)/register/action";
@@ -78,6 +79,7 @@ export default function RegisterForm() {
 						name="password"
 						id="password"
 						required
+						minLength={8}
 						defaultValue={state?.inputs?.password || ""}
 						className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-navy placeholder:text-zinc-400 focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal"
 						placeholder="••••••••"
@@ -100,6 +102,12 @@ export default function RegisterForm() {
 					favicon={<GithubIcon />}
 					oauth={signInWithOAuth.bind(null, "github")}
 				/>
+				<div className="mt-6 text-center text-sm text-zinc-600">
+					Already have an account?{" "}
+					<Link href="/login" className="font-medium text-teal hover:underline">
+						Log in
+					</Link>
+				</div>
 			</Form>
 		</div>
 	);
