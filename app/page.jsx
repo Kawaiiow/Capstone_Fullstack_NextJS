@@ -1,7 +1,14 @@
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/ui/Navbar";
+import { createClient } from "@/libs/supabase";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const getStartedHref = user ? "/dashboard" : "/register";
+
   return (
      <div className="flex flex-col min-h-screen bg-surface">
       
@@ -20,9 +27,12 @@ export default function Home() {
           payment slip, and track your bookings — all in one place.
         </p>
         <div className="flex gap-3">
-          <button className="bg-navy text-white text-sm px-5 py-2.5 rounded font-medium">
+          <Link
+            href={getStartedHref}
+            className="bg-navy text-white text-sm px-5 py-2.5 rounded font-medium"
+          >
             get started
-          </button>
+          </Link>
           <button className="border border-navy text-navy text-sm px-5 py-2.5 rounded">
             see how it works
           </button>
