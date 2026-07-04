@@ -1,8 +1,15 @@
-import supabase from '@/libs/supabase'
+import { createClient } from '@/libs/supabase'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 export default async function RoomDetailPage({ params }) {
   const { id } = await params
+  const supabase = await createClient()
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    redirect('/login')
+  }
 
   const { data: room, error } = await supabase
     .from('rooms')
