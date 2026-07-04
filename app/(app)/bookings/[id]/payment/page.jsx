@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase"
 import { redirect, notFound } from "next/navigation"
 import Link from "next/link"
+import PaymentForm from "./PaymentForm"
 
 export default async function PaymentPage({ params }) {
   const { id } = await params
@@ -80,26 +81,8 @@ export default async function PaymentPage({ params }) {
       <p className="text-sm font-medium text-navy mb-3">สแกนจ่ายผ่าน PromptPay</p>
       <div className="w-48 h-48 rounded-xl bg-muted mx-auto mb-8" />
 
-      {/* อัปโหลดสลิป (placeholder ให้เพื่อนมาทำต่อ) */}
-      <p className="text-sm font-medium text-navy mb-3">แนบสลิปการโอนเงิน</p>
-      <div className="border-2 border-dashed border-border rounded-xl p-10 text-center mb-2">
-        <p className="text-navy/70">ลากไฟล์สลิปมาวาง หรือคลิกเพื่อเลือกไฟล์</p>
-        <p className="text-xs text-navy/50 mt-1">รองรับ jpg, png ขนาดไม่เกิน 5MB</p>
-      </div>
-      <p className="text-xs text-navy/50 mb-8">
-        (ส่วนอัปโหลดสลิปกำลังพัฒนาโดยทีม จะเปิดใช้งานเร็วๆ นี้)
-      </p>
-
-      <button
-        type="button"
-        disabled
-        className="w-full bg-navy text-white px-6 py-3 rounded-lg font-medium opacity-50 cursor-not-allowed"
-      >
-        ยืนยันการจอง
-      </button>
-      <p className="text-xs text-navy/50 text-center mt-2">
-        การจองของคุณจะรอการอนุมัติจากเจ้าหน้าที่หลังแนบสลิป
-      </p>
+      {/* อัปโหลดสลิป */}
+      <PaymentForm bookingId={id} totalPrice={totalPrice} />
     </div>
   )
 }

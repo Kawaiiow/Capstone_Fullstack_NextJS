@@ -17,13 +17,14 @@ export default async function StaffRequestsPage() {
         return <div className="p-8 text-center"><h1 className="text-2xl font-bold text-danger">Unauthorized</h1></div>
     }
 
-    // Fetch pending bookings with associated room
+    // Fetch pending bookings with associated room and payments
     const { data: rawBookings, error } = await supabase
         .from("bookings")
         .select(`
             id, start_time, end_time, status, created_at,
             rooms ( name, price_per_hour ),
-            user_id
+            user_id,
+            payments ( slip_url )
         `)
         .eq("status", "pending")
         .order("created_at", { ascending: true })

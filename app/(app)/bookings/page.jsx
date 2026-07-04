@@ -7,6 +7,7 @@ const statusConfig = {
     pending: { label: "รอดำเนินการ", color: "bg-warning" },
     confirmed: { label: "ยืนยันแล้ว", color: "bg-teal" },
     cancelled: { label: "ยกเลิก", color: "bg-danger" },
+    checked_in: { label: "เช็คอินแล้ว", color: "bg-success" },
 }
 
 export default async function MyBookingsPage() {

@@ -27,6 +27,7 @@ export default function RequestList({ bookings }) {
                 const dateLabel = new Date(booking.start_time).toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" })
                 const startLabel = new Date(booking.start_time).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })
                 const endLabel = new Date(booking.end_time).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" })
+                const slipUrl = booking.payments?.[0]?.slip_url
 
                 const isLoading = loadingId === booking.id
 
@@ -44,6 +45,15 @@ export default function RequestList({ bookings }) {
 
                         <div className="flex items-center gap-4 mt-4 sm:mt-0 w-full sm:w-auto justify-end">
                             <span className="font-bold text-navy mr-4">฿{totalPrice}</span>
+                            {slipUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => window.open(slipUrl, "_blank")}
+                                    className="text-xs px-4 py-2 flex-shrink-0 rounded-lg border border-teal text-teal hover:bg-teal hover:text-white transition-colors"
+                                >
+                                    Inspect Slip
+                                </button>
+                            )}
                             <button
                                 type="button"
                                 onClick={() => handleAction(booking.id, "cancelled")}
