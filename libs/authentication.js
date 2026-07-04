@@ -59,7 +59,16 @@ export async function signInWithOAuth(provider) {
 	});
 
 	if (error) {
-		return redirect(`/register?error=${encodeURIComponent(error.message)}`);
+		const referer = headerList.get("referer");
+		let redirectPath = "/login";
+		if (referer) {
+			try {
+				redirectPath = new URL(referer).pathname;
+			} catch (e) {
+				// ignore
+			}
+		}
+		return redirect(`${redirectPath}?error=${encodeURIComponent(error.message)}`);
 	}
 
 	if (data.url) {

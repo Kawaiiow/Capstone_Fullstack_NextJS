@@ -10,8 +10,9 @@ import { signInWithOAuth } from "@/libs/authentication";
 import SubmitButton from "./SubmitButton";
 import OAuthButton from "./OAuthButton";
 
-export default function LoginForm() {
+export default function LoginForm({ error }) {
 	const [state, formAction, isPending] = useActionState(loginUser, null);
+	const displayError = state?.error || error;
 
 	return (
 		<Form action={formAction} className="space-y-4">
@@ -50,8 +51,8 @@ export default function LoginForm() {
 				/>
 			</div>
 
-			{state?.error && (
-				<p className="text-sm text-danger">{state.error}</p>
+			{displayError && (
+				<p className="text-sm text-danger">{displayError}</p>
 			)}
 			{state?.success && (
 				<p className="text-sm text-teal">{state.success}</p>
