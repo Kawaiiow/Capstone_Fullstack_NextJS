@@ -13,6 +13,7 @@ const navItems = [
 export default function Sidebar({ userRole }) {
 	const [expanded, setExpanded] = useState(true)
 	const isAdmin = userRole === "admin"
+	const isStaff = userRole === "admin" || userRole === "staff"
 
 	return (
 		<aside
@@ -53,6 +54,16 @@ export default function Sidebar({ userRole }) {
 								}`}
 						>
 							{expanded ? "Admin Panel" : "A"}
+						</a>
+					)}
+					{isStaff && (
+						<a
+							href="/staff/requests"
+							title={!expanded ? "Staff Panel" : undefined}
+							className={`px-4 py-2 rounded-lg text-amber-600 font-semibold hover:bg-amber-100 transition-colors ${expanded ? "" : "flex justify-center"
+								}`}
+						>
+							{expanded ? "Staff Panel" : "S"}
 						</a>
 					)}
 				</nav>
