@@ -54,6 +54,12 @@ export default function BookingForm({ room, userId }) {
       return
     }
 
+    await supabase.from("notifications").insert({
+      user_id: userId,
+      title: "Booking Requested",
+      message: `Your booking for ${room.name} has been placed and is waiting for approval.`
+    })
+
     router.push(`/bookings/${data.id}/payment`)
   }
 
