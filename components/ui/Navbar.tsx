@@ -12,12 +12,6 @@ export default async function Navbar() {
         <span className="font-semibold text-lg text-navy">U U BOR</span>
       </div>
 
-      <div className="flex gap-6 text-sm text-zinc-600">
-        <span>features</span>
-        <span>rooms</span>
-        <span>contact</span>
-      </div>
-
       <div className="flex gap-2">
         {user ? (
           <>
