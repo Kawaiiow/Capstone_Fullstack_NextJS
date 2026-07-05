@@ -35,6 +35,27 @@ export default function BookingForm({ room, userId }) {
 
     setSubmitting(true)
 
+    // Check for overlapping bookings
+    const { data: overlapping, error: overlapError } = await supabase
+      .from("bookings")
+      .select("id")
+      .eq("room_id", room.id)
+      .in("status", ["pending", "confirmed"])
+      .lt("start_time", new Date(endTime).toISOString())
+      .gt("end_time", new Date(startTime).toISOString())
+
+    if (overlapError) {
+      setErrorMsg(overlapError.message)
+      setSubmitting(false)
+      return
+    }
+
+    if (overlapping && overlapping.length > 0) {
+      setErrorMsg("เวลานี้ถูกจองไปแล้ว กรุณาเลือกเวลาอื่น")
+      setSubmitting(false)
+      return
+    }
+
     const { data, error } = await supabase
       .from("bookings")
       .insert({

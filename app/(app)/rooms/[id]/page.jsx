@@ -14,11 +14,19 @@ export default async function RoomDetailPage({ params }) {
   const { data: room, error } = await supabase
     .from('rooms')
     .select(`
-      id, name, room_type, capacity, status,
+      id, name, room_type, capacity, status, price_per_hour,
       room_amenities(amenities(name))
     `)
     .eq('id', id)
     .single()
+
+  const { data: bookings } = await supabase
+    .from('bookings')
+    .select('start_time, end_time, status')
+    .eq('room_id', id)
+    .in('status', ['pending', 'confirmed'])
+    .gte('end_time', new Date().toISOString())
+    .order('start_time', { ascending: true })
 
   if (error || !room) {
     return (
@@ -47,6 +55,30 @@ export default async function RoomDetailPage({ params }) {
               {name}
             </span>
           ))}
+        </div>
+      )}
+
+      {bookings && bookings.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-navy mb-3">ช่วงเวลาที่ถูกจองแล้ว (เร็วๆ นี้)</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left border">
+              <thead className="bg-muted text-navy border-b">
+                <tr>
+                  <th className="px-4 py-3 border-b">เริ่มเวลา</th>
+                  <th className="px-4 py-3 border-b">สิ้นสุดเวลา</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.map((b, i) => (
+                  <tr key={i} className="border-b">
+                    <td className="px-4 py-3 whitespace-nowrap">{new Date(b.start_time).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{new Date(b.end_time).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
