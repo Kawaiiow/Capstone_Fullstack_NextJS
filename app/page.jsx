@@ -10,12 +10,10 @@ export default async function Home() {
   const getStartedHref = user ? "/dashboard" : "/register";
 
   return (
-     <div className="flex flex-col min-h-screen bg-surface">
-      
+    <div className="flex flex-col min-h-screen bg-surface">
       <Navbar />
 
       <div className="flex flex-col items-center text-center py-12 px-6 bg-muted">
-        
         <span className="text-xs bg-teal text-navy px-3 py-1 rounded-md mb-4">
           real-time room availability
         </span>
@@ -39,34 +37,38 @@ export default async function Home() {
         </div>
       </div>
 
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border py-12 px-6">
-        <div className="bg-surface flex flex-col items-center text-center p-6">
-          <h3 className="text-sm font-medium text-navy mb-1">
-            live availability
-          </h3>
-          <p className="text-xs text-zinc-600">
-            no more double-booked rooms
-          </p>
-        </div>
-        <div className="bg-surface flex flex-col items-center text-center p-6">
-          <h3 className="text-sm font-medium text-navy mb-1">
-            slip upload
-          </h3>
-          <p className="text-xs text-zinc-600">
-            pay and confirm in one flow
-          </p>
-        </div>
-        <div className="bg-surface flex flex-col items-center text-center p-6">
-          <h3 className="text-sm font-medium text-navy mb-1">
-            role-based access
-          </h3>
-          <p className="text-xs text-zinc-600">
-            admins, staff and members, separated
-          </p>
+      <section className="py-16 px-6 bg-surface">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border max-w-5xl mx-auto rounded-lg overflow-hidden">
+          <div className="bg-surface flex flex-col items-center text-center p-6">
+            <h3 className="text-sm font-medium text-navy mb-1">
+              live availability
+            </h3>
+            <p className="text-xs text-zinc-600">
+              no more double-booked rooms
+            </p>
+          </div>
+          <div className="bg-surface flex flex-col items-center text-center p-6">
+            <h3 className="text-sm font-medium text-navy mb-1">
+              slip upload
+            </h3>
+            <p className="text-xs text-zinc-600">
+              pay and confirm in one flow
+            </p>
+          </div>
+          <div className="bg-surface flex flex-col items-center text-center p-6">
+            <h3 className="text-sm font-medium text-navy mb-1">
+              role-based access
+            </h3>
+            <p className="text-xs text-zinc-600">
+              admins, staff and members, separated
+            </p>
+          </div>
         </div>
       </section>
-    
-    
+
+      <footer className="mt-auto py-6 px-6 text-center text-xs text-zinc-500 border-t border-border">
+        © 2026 U U BOR. built for the capstone project.
+      </footer>
     </div>
   );
 }
