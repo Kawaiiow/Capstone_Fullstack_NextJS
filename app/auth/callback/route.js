@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/libs/supabase";
 
-import { getURL } from "@/libs/authentication";
-
 export async function GET(request) {
-	const { searchParams } = new URL(request.url);
-	const origin = getURL();
+	const { searchParams, origin } = new URL(request.url);
 	const code = searchParams.get("code");
 	// If a 'next' parameter is passed, redirect there, otherwise go to homepage
 	const next = searchParams.get("next") ?? "/";

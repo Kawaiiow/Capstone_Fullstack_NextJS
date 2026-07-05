@@ -4,19 +4,6 @@ import { createClient } from "@/libs/supabase";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
-export function getURL() {
-	let url =
-		process?.env?.NEXT_PUBLIC_SITE_URL ??
-		process?.env?.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
-		process?.env?.VERCEL_PROJECT_PRODUCTION_URL ??
-		process?.env?.NEXT_PUBLIC_VERCEL_URL ??
-		process?.env?.VERCEL_URL ??
-		'http://localhost:3000/';
-	url = url.includes('http') ? url : `https://${url}`;
-	url = url.replace(/\/+$/, "");
-	return url;
-};
-
 export async function signUpWithEmail(formData) {
 	const supabase = await createClient();
 	const firstname = formData.get("firstname");
@@ -62,7 +49,7 @@ export async function signInWithEmail(formData) {
 export async function signInWithOAuth(provider) {
 	const supabase = await createClient();
 	const headerList = await headers();
-	const origin = getURL();
+	const origin = headerList.get("origin");
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
@@ -103,7 +90,7 @@ export async function resetPasswordForEmail(formData) {
 	const supabase = await createClient();
 	const email = formData.get("email");
 	const headerList = await headers();
-	const origin = getURL();
+	const origin = headerList.get("origin");
 
 	const { error } = await supabase.auth.resetPasswordForEmail(email, {
 		redirectTo: `${origin}/auth/callback?next=/reset-password`,
