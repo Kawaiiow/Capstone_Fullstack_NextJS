@@ -4,7 +4,7 @@ import { createClient } from "@/libs/supabase";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
-export const getURL = () => {
+export async function getURL() {
 	let url =
 		process?.env?.NEXT_PUBLIC_SITE_URL ??
 		process?.env?.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
