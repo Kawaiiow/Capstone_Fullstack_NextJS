@@ -4,7 +4,7 @@ import { createClient } from "@/libs/supabase";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
-export async function getURL() {
+export function getURL() {
 	let url =
 		process?.env?.NEXT_PUBLIC_SITE_URL ??
 		process?.env?.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
@@ -62,7 +62,7 @@ export async function signInWithEmail(formData) {
 export async function signInWithOAuth(provider) {
 	const supabase = await createClient();
 	const headerList = await headers();
-	const origin = await getURL();
+	const origin = getURL();
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
