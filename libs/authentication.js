@@ -62,7 +62,7 @@ export async function signInWithEmail(formData) {
 export async function signInWithOAuth(provider) {
 	const supabase = await createClient();
 	const headerList = await headers();
-	const origin = getURL();
+	const origin = await getURL();
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
