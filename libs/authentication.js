@@ -49,7 +49,9 @@ export async function signInWithEmail(formData) {
 export async function signInWithOAuth(provider) {
 	const supabase = await createClient();
 	const headerList = await headers();
-	const origin = headerList.get("origin");
+	const protocol = headerList.get("x-forwarded-proto") || "http";
+	const host = headerList.get("x-forwarded-host") || headerList.get("host");
+	const origin = headerList.get("origin") || `${protocol}://${host}`;
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
@@ -90,7 +92,9 @@ export async function resetPasswordForEmail(formData) {
 	const supabase = await createClient();
 	const email = formData.get("email");
 	const headerList = await headers();
-	const origin = headerList.get("origin");
+	const protocol = headerList.get("x-forwarded-proto") || "http";
+	const host = headerList.get("x-forwarded-host") || headerList.get("host");
+	const origin = headerList.get("origin") || `${protocol}://${host}`;
 
 	const { error } = await supabase.auth.resetPasswordForEmail(email, {
 		redirectTo: `${origin}/auth/callback?next=/reset-password`,
